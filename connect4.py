@@ -23,10 +23,8 @@ class BoardValue(Enum):
 
 
 class Player(object):
-  """This class represents a player.
+  """This class represents a player for connect4.
   """
-
-  # name = ""
 
   def __init__(self, name : str) -> None:
     """Constructor for the player class.
@@ -87,10 +85,13 @@ class Connect4(object):
   """This class represents a Connect4 game. The game board is represented by a
   2D BoardValue array with 6 rows and 7 columns. The index of the rows
   increases from top to bottom and the index of the columns increases from left
-  to right for the corresponding game board.
+  to right for the corresponding game board. Both row and columns are zero
+  indexed.
   """
+  _num_rows = 6
+  _num_columns = 7
 
-  def __init__(self, player_a: Player, player_b: Player):
+  def __init__(self, player_a: Player, player_b: Player) -> None:
     """Constructor for the Connect4 game.
 
     Parameters
@@ -117,9 +118,9 @@ class Connect4(object):
     >>> game = Connect4(playerA, playerB)
     """
 
-    self._board = [[-1]*7 for _ in range(6)]
+    self._board = [[-1]*Connect4._num_columns for _ in range(Connect4._num_rows)]
 
-    if player_a != player_b:
+    if player_a is not player_b:
       self._players = [player_a, player_b]
       self.start_new_game()
     else:
@@ -201,8 +202,8 @@ class Connect4(object):
     """
 
     ret = [[] for a in range(6)]
-    for i in range(6):
-      for j in range(7):
+    for i in range(Connect4._num_rows):
+      for j in range(Connect4._num_columns):
         if self._board[i][j] == -1:
           ret[i].append(BoardValue.EMPTY)
         elif self._board[i][j] == 0:
@@ -243,13 +244,13 @@ class Connect4(object):
 
     if self._game_state != GameState.GAME_CONTINUE:
       raise Connect4.GameOverException
-    if column < 0 or column >= 7:
+    if column < 0 or column >= Connect4._num_columns:
       raise ValueError
     if self._board[0][column] != -1:
       raise Connect4.FullColumnException
 
     row = 0
-    for row in range(1, 7):
+    for row in range(1, Connect4._num_columns):
       if row == 6:
         self._board[5][column] = self._curr_player_index
         break
@@ -289,8 +290,8 @@ class Connect4(object):
     >>> game.start_new_game()
     """
 
-    for i in range(0, 6):
-      for j in range(0, 7):
+    for i in range(Connect4._num_rows):
+      for j in range(Connect4._num_columns):
         self._board[i][j] = -1
     self._curr_player_index = self._random_select_start_player()
     self._game_state = GameState.GAME_CONTINUE

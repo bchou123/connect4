@@ -1,4 +1,3 @@
-import importlib
 from connect4 import *
 from randombot import RandomBot
 
