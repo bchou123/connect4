@@ -28,15 +28,56 @@ class Player(object):
 
   # name = ""
 
-  def __init__(self, n : str):
+  def __init__(self, name : str) -> None:
     """Constructor for the player class.
+
+    Parameters
+    ----
+    name : `str` - name of the player.
+
+    Return Value
+    ----
+    result : `Player` - the player object.
+
+    Exceptions
+    ----
+    None.
+
+    Sample Code
+    ----
+    >>> myPlayer = Player("Bob")
     """
-    self.name = n
+    self.name = name
 
   def __str__(self):
     return self.name
 
-  def choose_column(self, board:[[]]):
+  def choose_column(self, board : List[List[BoardValue]]) -> int:
+    """Interface to decide how to player chooses their next move in connect4.
+
+    Parameters
+    ----
+    board : `List[List[BoardValue]]` - the current board that the player has to
+    perform a move on.
+
+    Return Value
+    ----
+    result : `int` - the column on the connect4 board which the player will add
+    a token to
+
+    Exceptions
+    ----
+    None.
+
+    Sample Code
+    ----
+    >>> playerA = Player("A")
+    >>> playerB = Player("B")
+    >>> game = Connect4(playerA, playerB)
+    >>> board = game.get_board()
+    >>> myPlayer.choose_column(board)
+    3
+    """
     pass
 
 
@@ -69,7 +110,12 @@ class Connect4(object):
 
     Sample Code
     ----
+    >>> playerA = Player("A")
+    >>> playerB = Player("B")
+    >>> game = Connect4(playerA, playerB)
     """
+
+    self._board = [[-1]*7 for _ in range(6)]
 
     if player_a != player_b:
       self._players = [player_a, player_b]
@@ -94,6 +140,11 @@ class Connect4(object):
 
     Sample Code
     ----
+    >>> playerA = Player("A")
+    >>> playerB = Player("B")
+    >>> game = Connect4(playerA, playerB)
+    >>> game.get_game_state()
+    GameState.GAME_CONTINUE
     """
     return self._game_state
 
@@ -114,6 +165,11 @@ class Connect4(object):
 
     Sample Code
     ----
+    >>> playerA = Player("A")
+    >>> playerB = Player("B")
+    >>> game = Connect4(playerA, playerB)
+    >>> game.get_curr_player().name
+    'A'
     """
 
     return self._players[self._curr_player_index]
@@ -136,6 +192,10 @@ class Connect4(object):
 
     Sample Code
     ----
+    >>> playerA = Player("A")
+    >>> playerB = Player("B")
+    >>> game = Connect4(playerA, playerB)
+    >>> board = game.get_board()
     """
 
     ret = [[] for a in range(6)]
@@ -172,9 +232,13 @@ class Connect4(object):
 
     Sample Code
     ----
+    >>> playerA = Player("A")
+    >>> playerB = Player("B")
+    >>> game = Connect4(playerA, playerB)
+    >>> game.add_token(3)
+    GameState.GAME_CONTINUE
     """
-    # # print("board before")
-    # self._# print_board()
+
     if self._game_state != GameState.GAME_CONTINUE:
       raise Connect4.GameOverException
     if column < 0 or column >= 7:
@@ -217,7 +281,10 @@ class Connect4(object):
 
     Sample Code
     ----
-
+    >>> playerA = Player("A")
+    >>> playerB = Player("B")
+    >>> game = Connect4(playerA, playerB)
+    >>> game.start_new_game()
     """
 
     for i in range(0, 6):

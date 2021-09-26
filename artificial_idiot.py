@@ -1,7 +1,7 @@
 from connect4 import *
 
 class ArtificialIdiot(Player):
-    def choose_column(self, board: [[]]) -> int:
+    def choose_column(self, board: List[List[BoardValue]]) -> int:
         possible_column = []
         for i in range(7):
             if board[0][i] == BoardValue.EMPTY:
