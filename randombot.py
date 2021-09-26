@@ -1,6 +1,6 @@
 from connect4 import *
 
-class ArtificialIdiot(Player):
+class RandomBot(Player):
     def choose_column(self, board: List[List[BoardValue]]) -> int:
         possible_column = []
         for i in range(7):

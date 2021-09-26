@@ -1,6 +1,6 @@
-# from connect4 import *
-import connect4_revise as connect4
-from artificial_idiot import *
+import importlib
+from connect4 import *
+from randombot import RandomBot
 
 
 def print_board(board: [[]]):
@@ -18,8 +18,8 @@ def print_board(board: [[]]):
 
 
 if __name__ == '__main__':
-    playerA = ArtificialIdiot("PlayerA")
-    playerB = ArtificialIdiot("PlayerB")
+    playerA = RandomBot("PlayerA")
+    playerB = RandomBot("PlayerB")
     connect4 = Connect4(playerA, playerB)
     board = connect4.get_board()
 
@@ -38,21 +38,7 @@ if __name__ == '__main__':
         print(game_state)
         print()
 
-    # print(connect4.get_curr_player())
-    # print(connect4.add_token())
-    # board = connect4.get_board()
-    # print_board(board)
-    # print()
-    #
-    # print(connect4.get_curr_player())
-    # print(connect4.add_token(0))
-    # board = connect4.get_board()
-    # print_board(board)
-    # print()
-    #
-    # connect4.start_new_game()
-    # board = connect4.get_board()
-    # print(connect4.get_curr_player())
-    # print_board(board)
+
+
 
 
