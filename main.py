@@ -1,4 +1,5 @@
-from connect4 import *
+# from connect4 import *
+import connect4_revise as connect4
 from artificial_idiot import *
 
 
