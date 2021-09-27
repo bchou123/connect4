@@ -427,18 +427,6 @@ class Connect4(object):
 
     return GameState.GAME_CONTINUE
 
-  class _Line(object):
-    start_row = -1
-    start_column = -1
-    end_row = -1
-    end_column = -1
-
-    def __init__(self, sr, sc, er, ec):
-      self.start_row = sr
-      self.start_column = sc
-      self.end_row = er
-      self.end_column = ec
-
   class SamePlayerException(Exception):
     """Thrown when the 2 players of a Connect4 game are the same"""
     pass
