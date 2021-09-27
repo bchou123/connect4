@@ -35,7 +35,7 @@ if __name__ == '__main__':
         print(curr_player)
         if curr_player == playerA:
             playerA_column = playerA.choose_column(board)  # playerA choose a column. Refer to randombot.py
-            print("playerA choose: " + playerA_column)
+            print("playerA choose: " + str(playerA_column))
             game_state = connect4.add_token(playerA_column)  # use add_token method to add a token for current player to the chosen column
                                                              # renew game_state like this to see if there is a winner
         elif curr_player == playerB:
