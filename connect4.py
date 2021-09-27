@@ -1,4 +1,3 @@
-import collections
 import random
 from enum import Enum
 from typing import List
