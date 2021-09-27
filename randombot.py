@@ -1,3 +1,7 @@
+""" This example is a subclass of Player.
+    It choose a column randomly from all possible (unfilled) columns
+    by override choose_column(board) method
+"""
 from connect4 import *
 
 class RandomBot(Player):

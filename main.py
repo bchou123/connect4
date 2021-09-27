@@ -35,14 +35,20 @@ if __name__ == '__main__':
         print(curr_player)
         if curr_player == playerA:
             playerA_column = playerA.choose_column(board)  # playerA choose a column. Refer to randombot.py
+            print("playerA choose: " + playerA_column)
             game_state = connect4.add_token(playerA_column)  # use add_token method to add a token for current player to the chosen column
                                                              # renew game_state like this to see if there is a winner
         elif curr_player == playerB:
-            playerB_column = playerB.choose_column(board)  # playerB choose a column by the default method (input from console)
-            while playerB_column < 0 or playerB_column >= 7:  # column must >=0 and <=6
-                print("invalid column, choose again")
-                playerB_column = playerB.choose_column(board)
-            game_state = connect4.add_token(playerB_column)
+            playerB_column = -1
+            while True:
+                try:
+                    playerB_column = playerB.choose_column(board)  # playerB choose a column by the default method (input from console)
+                    game_state = connect4.add_token(playerB_column)
+                    break
+                except ValueError:  # the method raises ValueError if the input is not an int >=0 and <7
+                    print("invalid column, choose again")
+                except connect4.FullColumnException:  # column must be unfilled (top of it must be empty), otherwise FullColumnException is raised
+                    print("invalid column, choose again")
         board = connect4.get_board()  # get board condition after the token is added
         print_board(board)
         print(game_state)
