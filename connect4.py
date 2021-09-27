@@ -49,13 +49,14 @@ class Player(object):
   def __str__(self):
     return self.name
 
-  def choose_column(self) -> int:
+  def choose_column(self, board: List[List[BoardValue]]) -> int:
     """Decides how the player chooses the next column to drop a token in by
     taking in an input from stdin.
 
     Parameters
     ----
-    None.
+    board : 'List[List[BoardValue]]' a 2d list representing the current board.
+    The most common and simple way is to use the board from get_board() method.
 
     Return Value
     ----

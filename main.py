@@ -10,8 +10,8 @@ def print_board(board: [[]]):
     """You may show the board like this.
     """
     print("============================")
-    for i in range(6):  # iterate 6 lines
-        for j in range(7):  # iterate 7 elements in the line
+    for i in range(6):  # iterate 6 rows
+        for j in range(7):  # iterate 7 elements in the row
             if board[i][j] == BoardValue.EMPTY:
                 print("_", end=" ")
             elif board[i][j] == BoardValue.A_TOKEN:
@@ -38,7 +38,10 @@ if __name__ == '__main__':
             game_state = connect4.add_token(playerA_column)  # use add_token method to add a token for current player to the chosen column
                                                              # renew game_state like this to see if there is a winner
         elif curr_player == playerB:
-            playerB_column = playerB.choose_column()  # playerB choose a column by the default method (input from console)
+            playerB_column = playerB.choose_column(board)  # playerB choose a column by the default method (input from console)
+            while playerB_column < 0 or playerB_column >= 7:  # column must >=0 and <=6
+                print("invalid column, choose again")
+                playerB_column = playerB.choose_column(board)
             game_state = connect4.add_token(playerB_column)
         board = connect4.get_board()  # get board condition after the token is added
         print_board(board)
@@ -47,8 +50,3 @@ if __name__ == '__main__':
 
     connect4.start_new_game()  # if there is a winner or board is full, start a new game like this.
                                # when connect4 is instantiated at first, this method is called automatically.
-
-
-
-
-
