@@ -1,6 +1,6 @@
-""" This example is a subclass of Player.
-    It choose a column randomly from all possible (unfilled) columns
-    by override choose_column(board) method
+""" This is a subclass of the Player class which represents a bot.
+    It chooses a column randomly from all possible (unfilled) columns
+    through overriding the choose_column(board) method.
 """
 from connect4 import *
 

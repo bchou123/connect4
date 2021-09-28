@@ -1,5 +1,5 @@
 """ This file is a example of how this API works.
-
+    This client code is an example of connect4 between a human and a computer.
 """
 
 from connect4 import *

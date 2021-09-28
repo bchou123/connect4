@@ -1,7 +1,10 @@
+"""This package contains classes to create a Connect4 game. It includes the
+Connect4 class which manages the game and the Player class representing a player.
+"""
+
 import random
 from enum import Enum
 from typing import List
-
 
 class GameState(Enum):
   """Represents the current state of the connect4 game
@@ -22,7 +25,9 @@ class BoardValue(Enum):
 
 
 class Player(object):
-  """This class represents a player for connect4.
+  """This class represents a player for connect4 that takes in inputs from stdin
+  to play the next move. This class is meant to be a base template for its
+  subclasses.
   """
 
   def __init__(self, name : str) -> None:
@@ -51,12 +56,14 @@ class Player(object):
 
   def choose_column(self, board: List[List[BoardValue]]) -> int:
     """Decides how the player chooses the next column to drop a token in by
-    taking in an input from stdin.
+    taking in an input from stdin. Subclasses of Player can override this method
+    to get different player behaviors.
 
     Parameters
     ----
     board : 'List[List[BoardValue]]' a 2d list representing the current board.
-    The most common and simple way is to use the board from get_board() method.
+    The most common and simple way is to use the board from the get_board()
+    method in the Connect4 class.
 
     Return Value
     ----
@@ -65,7 +72,8 @@ class Player(object):
 
     Exceptions
     ----
-    ValueError - thrown when inputted column value is not an int.
+    ValueError - thrown when inputted column value is not an int or when
+    col < 0 or col > 6.
 
     Sample Code
     ----
@@ -75,9 +83,12 @@ class Player(object):
     >>> board = game.get_board()
     >>> myPlayer.choose_column(board)
     3
+    3
     """
     print("Player %s: Choose a column to add a token to." % self.name)
     col = input()
+    if int(col) < 0 or int(col) >= Connect4._num_columns:
+        raise ValueError
     return int(col)
 
 
@@ -178,7 +189,7 @@ class Connect4(object):
     return self._players[self._curr_player_index]
 
   def get_board(self) -> List[List[BoardValue]]:
-    """Returns the current board state.
+    """Returns the current board as a 2D array of BoardValues.
 
     Parameters
     ----
@@ -428,7 +439,7 @@ class Connect4(object):
     return GameState.GAME_CONTINUE
 
   class SamePlayerException(Exception):
-    """Thrown when the 2 players of a Connect4 game are the same"""
+    """Thrown when the 2 players of a Connect4 game are the same player."""
     pass
 
   class FullColumnException(Exception):
