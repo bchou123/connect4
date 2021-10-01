@@ -4,7 +4,10 @@
 """
 from connect4 import *
 
-class RandomBot(Player):
+class RandomBot():
+    def __init__(self):
+        pass
+
     def choose_column(self, board: List[List[BoardValue]]) -> int:
         possible_column = []
         for i in range(7):

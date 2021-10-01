@@ -1,5 +1,6 @@
-"""This package contains classes to create a Connect4 game. It includes the
-Connect4 class which manages the game and the Player class representing a player.
+"""This package contains the functionality needed to create client code for a
+   Connect4 game. The Connect4 class implements the game logic and exposes
+   public methods needed to run the game.
 """
 
 import random
@@ -7,90 +8,26 @@ from enum import Enum
 from typing import List
 
 class GameState(Enum):
-  """Represents the current state of the connect4 game
+  """Represents the current state of the connect4 game.
   - GAME_CONTINUE : no players have won yet, game is still ongoing.
   - PLAYER_WON : the player who made the most recent move has won.
-  - BOARD_FULL : the board is full, no additional tokens can be added, no players have won.
+  - DRAW : the board is full, no additional tokens can be added, no players have won.
   """
-  BOARD_FULL = 0
+  DRAW = 0
   PLAYER_WIN = 1
   GAME_CONTINUE = 2
 
 
 class BoardValue(Enum):
-  """Represents the possible values in the connect4 game board"""
+  """Represents the possible values in the connect4 game board."""
   EMPTY = 0
   A_TOKEN = 1
   B_TOKEN = 2
 
-
-class Player(object):
-  """This class represents a player for connect4 that takes in inputs from stdin
-  to play the next move. This class is meant to be a base template for its
-  subclasses.
-  """
-
-  def __init__(self, name : str) -> None:
-    """Constructor for the player class.
-
-    Parameters
-    ----
-    name : `str` - name of the player.
-
-    Return Value
-    ----
-    result : `Player` - the player object.
-
-    Exceptions
-    ----
-    None.
-
-    Sample Code
-    ----
-    >>> myPlayer = Player("Bob")
-    """
-    self.name = name
-
-  def __str__(self):
-    return self.name
-
-  def choose_column(self, board: List[List[BoardValue]]) -> int:
-    """Decides how the player chooses the next column to drop a token in by
-    taking in an input from stdin. Subclasses of Player can override this method
-    to get different player behaviors.
-
-    Parameters
-    ----
-    board : 'List[List[BoardValue]]' a 2d list representing the current board.
-    The most common and simple way is to use the board from the get_board()
-    method in the Connect4 class.
-
-    Return Value
-    ----
-    result : `int` - the column on the connect4 board which the player will add
-    a token to.
-
-    Exceptions
-    ----
-    ValueError - thrown when inputted column value is not an int or when
-    col < 0 or col > 6.
-
-    Sample Code
-    ----
-    >>> playerA = Player("A")
-    >>> playerB = Player("B")
-    >>> game = Connect4(playerA, playerB)
-    >>> board = game.get_board()
-    >>> myPlayer.choose_column(board)
-    3
-    3
-    """
-    print("Player %s: Choose a column to add a token to." % self.name)
-    col = input()
-    if int(col) < 0 or int(col) >= Connect4._num_columns:
-        raise ValueError
-    return int(col)
-
+class Player(Enum):
+  """Represents the 2 players of a connect4 game."""
+  A = 0
+  B = 1
 
 class Connect4(object):
   """This class represents a Connect4 game. The game board is represented by a
@@ -98,18 +35,18 @@ class Connect4(object):
   increases from top to bottom and the index of the columns increases from left
   to right for the corresponding game board. Both row and columns are zero
   indexed.
+
+  The two players are represented by Player.A and Player.B.
   """
   _num_rows = 6
   _num_columns = 7
 
-  def __init__(self, player_a: Player, player_b: Player) -> None:
+  def __init__(self) -> None:
     """Constructor for the Connect4 game.
 
     Parameters
     ----
-    player_a : `Player` - one player of the game.
-
-    player_b : `Player` - the other player of the game.
+    None.
 
     Return Value
     ----
@@ -117,25 +54,16 @@ class Connect4(object):
 
     Exceptions
     ----
-    TypeError - thrown when either playerA or playerB is not of type `Player` or
-    is None.
-
-    SamePlayerException - thrown when playerA and playerB is the same player.
+    None.
 
     Sample Code
     ----
-    >>> playerA = Player("A")
-    >>> playerB = Player("B")
-    >>> game = Connect4(playerA, playerB)
+    >>> game = Connect4()
     """
 
     self._board = [[-1]*Connect4._num_columns for _ in range(Connect4._num_rows)]
-
-    if player_a is not player_b:
-      self._players = [player_a, player_b]
-      self.start_new_game()
-    else:
-      raise Connect4.SamePlayerException
+    self._players = [Player.A, Player.B]
+    self.start_new_game()
 
   def get_game_state(self) -> GameState:
     """Returns the current game state.
@@ -154,9 +82,7 @@ class Connect4(object):
 
     Sample Code
     ----
-    >>> playerA = Player("A")
-    >>> playerB = Player("B")
-    >>> game = Connect4(playerA, playerB)
+    >>> game = Connect4()
     >>> game.get_game_state()
     GameState.GAME_CONTINUE
     """
@@ -171,7 +97,7 @@ class Connect4(object):
 
     Return Value
     ----
-    player : `Player` - the player playing this turn.
+    player : `Player` - enum representing the current player.
 
     Exceptions
     ----
@@ -179,17 +105,15 @@ class Connect4(object):
 
     Sample Code
     ----
-    >>> playerA = Player("A")
-    >>> playerB = Player("B")
-    >>> game = Connect4(playerA, playerB)
-    >>> game.get_curr_player().name
-    'A'
+    >>> game = Connect4()
+    >>> game.get_curr_player()
+    Player.A
     """
 
     return self._players[self._curr_player_index]
 
   def get_board(self) -> List[List[BoardValue]]:
-    """Returns the current board as a 2D array of BoardValues.
+    """Returns a deep copy of the current board as a 2D array of BoardValues.
 
     Parameters
     ----
@@ -197,7 +121,7 @@ class Connect4(object):
 
     Return Value
     ----
-    board : `List[List[BoardValue]]` - returns a copy of the current board state
+    board : `List[List[BoardValue]]` - returns a deep copy of the current board state
     as a 2D array.
 
     Exception
@@ -206,10 +130,8 @@ class Connect4(object):
 
     Sample Code
     ----
-    >>> playerA = Player("A")
-    >>> playerB = Player("B")
-    >>> game = Connect4(playerA, playerB)
-    >>> board = game.get_board()
+    >>> game = Connect4()
+    >>> board = game.get_board() # returns an empty board
     """
 
     ret = [[] for a in range(6)]
@@ -226,7 +148,9 @@ class Connect4(object):
 
   def add_token(self, column: int) -> GameState:
     """Adds a token to the column for the current player. Token is always placed
-    at the bottom-most empty row of that column.
+    at the bottom-most empty row of that column. Modifies the game board and
+    switches the current player to the next player. The board is 0 indexed and
+    starts at column 0 and ends at column 6.
 
     Parameters
     ----
@@ -240,25 +164,27 @@ class Connect4(object):
     ----
     ValueError - thrown when column is out of bounds
 
-    FullColumnException - thrown when trying to add a token to a full column.
+    FullColumnError - thrown when trying to add a token to a full column.
 
-    GameOverException - thrown when there is already a winner or board is full.
+    GameOverError - thrown when there is already a winner or board is full.
 
     Sample Code
     ----
-    >>> playerA = Player("A")
-    >>> playerB = Player("B")
-    >>> game = Connect4(playerA, playerB)
-    >>> game.add_token(3)
+    >>> game = Connect4()
+    >>> game.get_curr_player()
+    Player.A
+    >>> game.add_token(3) # adds a token to the 4th column
     GameState.GAME_CONTINUE
+    >>> game.get_curr_player()
+    Player.B
     """
 
     if self._game_state != GameState.GAME_CONTINUE:
-      raise Connect4.GameOverException
+      raise Connect4.GameOverError
     if column < 0 or column >= Connect4._num_columns:
       raise ValueError
     if self._board[0][column] != -1:
-      raise Connect4.FullColumnException
+      raise Connect4.FullColumnError
 
     row = 0
     for row in range(1, Connect4._num_columns):
@@ -269,9 +195,6 @@ class Connect4(object):
         self._board[row - 1][column] = self._curr_player_index
         break
 
-    # # print("board after")
-    # self._# print_board()
-
     self._game_state = self._calc_game_state(row - 1, column)
     self._board[row - 1][column] = self._curr_player_index
     self._curr_player_index ^= 1
@@ -279,7 +202,8 @@ class Connect4(object):
 
   def start_new_game(self) -> None:
     """Starts a new connect4 game by emptying the game board. The first player
-    is selected randomly.
+    is selected randomly. This method is called automatically on creation of
+    a Connect4 instance.
 
     Parameters
     ----
@@ -295,10 +219,9 @@ class Connect4(object):
 
     Sample Code
     ----
-    >>> playerA = Player("A")
-    >>> playerB = Player("B")
-    >>> game = Connect4(playerA, playerB)
-    >>> game.start_new_game()
+    >>> game.get_board() # assuming game has been played, returns an non-empty board
+    >>> game.start_new_game() # restarts the game
+    >>> game.get_board() # returns an empty board
     """
 
     for i in range(Connect4._num_rows):
@@ -320,7 +243,7 @@ class Connect4(object):
           break
       if is_full:
         # print("_calc_game_state: full")
-        return GameState.BOARD_FULL
+        return GameState.DRAW
 
     # ========================= new token at first of connect4
     if new_row >= 3:  # 0
@@ -438,15 +361,11 @@ class Connect4(object):
 
     return GameState.GAME_CONTINUE
 
-  class SamePlayerException(Exception):
-    """Thrown when the 2 players of a Connect4 game are the same player."""
-    pass
-
-  class FullColumnException(Exception):
+  class FullColumnError(Exception):
     """Thrown when attempting to add token to a full column."""
     pass
 
-  class GameOverException(Exception):
+  class GameOverError(Exception):
     """Thrown when attempting to add token to the board when the game is already
     over (either a player won or the board is full).
     """

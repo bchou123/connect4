@@ -23,9 +23,8 @@ def print_board(board: [[]]):
 
 
 if __name__ == '__main__':
-    playerA = RandomBot("PlayerA")  # playerA is an instance of a subclass of Player. Refer to randombot.py
-    playerB = Player("PlayerB")  # playerB is an instance of Player.
-    connect4 = Connect4(playerA, playerB)  # instantiate Connect4
+    bot = RandomBot()
+    connect4 = Connect4()  # instantiate Connect4
     board = connect4.get_board()  # get board from connect4
     print_board(board)  # an empty board is shown
 
@@ -33,22 +32,22 @@ if __name__ == '__main__':
     while game_state == GameState.GAME_CONTINUE:  # while there is no winner, and the board is not full, the game can continue
         curr_player = connect4.get_curr_player()  # get current player for this round
         print(curr_player)
-        if curr_player == playerA:
-            playerA_column = playerA.choose_column(board)  # playerA choose a column. Refer to randombot.py
+        if curr_player == Player.A:
+            playerA_column = bot.choose_column(board)  # playerA choose a column. Refer to randombot.py
             print("playerA choose: " + str(playerA_column))
             game_state = connect4.add_token(playerA_column)  # use add_token method to add a token for current player to the chosen column
                                                              # renew game_state like this to see if there is a winner
-        elif curr_player == playerB:
+        elif curr_player == Player.B:
             playerB_column = -1
             while True:
                 try:
-                    playerB_column = playerB.choose_column(board)  # playerB choose a column by the default method (input from console)
+                    playerB_column = int(input())
                     game_state = connect4.add_token(playerB_column)
                     break
                 except ValueError:  # the method raises ValueError if the input is not an int >=0 and <7
                     print("invalid column, choose again")
-                except connect4.FullColumnException:  # column must be unfilled (top of it must be empty), otherwise FullColumnException is raised
-                    print("invalid column, choose again")
+                except connect4.FullColumnError:  # column must be unfilled (top of it must be empty), otherwise FullColumnError is raised
+                    print("full column, choose again")
         board = connect4.get_board()  # get board condition after the token is added
         print_board(board)
         print(game_state)
@@ -56,3 +55,5 @@ if __name__ == '__main__':
 
     connect4.start_new_game()  # if there is a winner or board is full, start a new game like this.
                                # when connect4 is instantiated at first, this method is called automatically.
+
+
