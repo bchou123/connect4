@@ -1,12 +1,9 @@
 """ This file is a example of how this API works.
     This client code is an example of connect4 between a human and a computer.
 """
-
 from connect4 import *
-from randombot import RandomBot
 
-
-def print_board(board: [[]]):
+def print_board(board: List[List[BoardValue]]) -> None:
     """You may show the board like this.
     """
     print("============================")
@@ -21,9 +18,17 @@ def print_board(board: [[]]):
         print()
     print("============================")
 
+def choose_rand_column(board: List[List[BoardValue]]) -> int:
+        possible_column = []
+        for i in range(7):
+            if board[0][i] == BoardValue.EMPTY:
+                possible_column.append(i)
+        if len(possible_column) == 0:
+            raise ValueError
+        return random.choice(possible_column)
+
 
 if __name__ == '__main__':
-    bot = RandomBot()
     connect4 = Connect4()  # instantiate Connect4
     board = connect4.get_board()  # get board from connect4
     print_board(board)  # an empty board is shown
@@ -33,7 +38,7 @@ if __name__ == '__main__':
         curr_player = connect4.get_curr_player()  # get current player for this round
         print(curr_player)
         if curr_player == Player.A:
-            playerA_column = bot.choose_column(board)  # playerA choose a column. Refer to randombot.py
+            playerA_column = choose_rand_column(board)  # playerA choose a column. Refer to randombot.py
             print("playerA choose: " + str(playerA_column))
             game_state = connect4.add_token(playerA_column)  # use add_token method to add a token for current player to the chosen column
                                                              # renew game_state like this to see if there is a winner
