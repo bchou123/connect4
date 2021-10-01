@@ -3,6 +3,18 @@
 """
 from connect4 import *
 
+# sample method used to implement a computer player
+# can call this method instead of input() for a player
+def choose_rand_column(board: List[List[BoardValue]]) -> int:
+        possible_column = []
+        for i in range(7):
+            if board[0][i] == BoardValue.EMPTY:
+                possible_column.append(i)
+        if len(possible_column) == 0:
+            raise ValueError
+        return random.choice(possible_column)
+
+# prints and formats the game board to stdout
 def print_board(board: List[List[BoardValue]]) -> None:
     """You may show the board like this.
     """
@@ -18,16 +30,6 @@ def print_board(board: List[List[BoardValue]]) -> None:
         print()
     print("============================")
 
-def choose_rand_column(board: List[List[BoardValue]]) -> int:
-        possible_column = []
-        for i in range(7):
-            if board[0][i] == BoardValue.EMPTY:
-                possible_column.append(i)
-        if len(possible_column) == 0:
-            raise ValueError
-        return random.choice(possible_column)
-
-
 if __name__ == '__main__':
     connect4 = Connect4()  # instantiate Connect4
     board = connect4.get_board()  # get board from connect4
@@ -37,22 +39,17 @@ if __name__ == '__main__':
     while game_state == GameState.GAME_CONTINUE:  # while there is no winner, and the board is not full, the game can continue
         curr_player = connect4.get_curr_player()  # get current player for this round
         print(curr_player)
-        if curr_player == Player.A:
-            playerA_column = choose_rand_column(board)  # playerA choose a column. Refer to randombot.py
-            print("playerA choose: " + str(playerA_column))
-            game_state = connect4.add_token(playerA_column)  # use add_token method to add a token for current player to the chosen column
-                                                             # renew game_state like this to see if there is a winner
-        elif curr_player == Player.B:
-            playerB_column = -1
-            while True:
-                try:
-                    playerB_column = int(input())
-                    game_state = connect4.add_token(playerB_column)
-                    break
-                except ValueError:  # the method raises ValueError if the input is not an int >=0 and <7
-                    print("invalid column, choose again")
-                except connect4.FullColumnError:  # column must be unfilled (top of it must be empty), otherwise FullColumnError is raised
-                    print("full column, choose again")
+        print("enter a column value (0-6)")
+        while True:
+            try:
+                column = int(input())
+                game_state = connect4.add_token(column)
+                break
+            except ValueError:  # the method raises ValueError if the input is not an int >=0 and <7
+                print("invalid column, choose again")
+            except connect4.FullColumnError:  # column must be unfilled (top of it must be empty), otherwise FullColumnError is raised
+                print("full column, choose again")
+
         board = connect4.get_board()  # get board condition after the token is added
         print_board(board)
         print(game_state)

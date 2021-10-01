@@ -27,7 +27,7 @@
                     <a class="class" href="#GameState">GameState</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="variable" href="#GameState.BOARD_FULL">BOARD_FULL</a>
+                                <a class="variable" href="#GameState.DRAW">DRAW</a>
                         </li>
                         <li>
                                 <a class="variable" href="#GameState.PLAYER_WIN">PLAYER_WIN</a>
@@ -57,10 +57,10 @@
                     <a class="class" href="#Player">Player</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#Player.__init__">Player</a>
+                                <a class="variable" href="#Player.A">A</a>
                         </li>
                         <li>
-                                <a class="function" href="#Player.choose_column">choose_column</a>
+                                <a class="variable" href="#Player.B">B</a>
                         </li>
                 </ul>
 
@@ -87,19 +87,13 @@
                                 <a class="function" href="#Connect4.start_new_game">start_new_game</a>
                         </li>
                         <li>
-                                <a class="class" href="#Connect4.SamePlayerException">Connect4.SamePlayerException</a>
+                                <a class="class" href="#Connect4.FullColumnError">Connect4.FullColumnError</a>
                                         <ul class="memberlist">
                             </ul>
 
                         </li>
                         <li>
-                                <a class="class" href="#Connect4.FullColumnException">Connect4.FullColumnException</a>
-                                        <ul class="memberlist">
-                            </ul>
-
-                        </li>
-                        <li>
-                                <a class="class" href="#Connect4.GameOverException">Connect4.GameOverException</a>
+                                <a class="class" href="#Connect4.GameOverError">Connect4.GameOverError</a>
                                         <ul class="memberlist">
                             </ul>
 
@@ -123,14 +117,16 @@
                     <h1 class="modulename">
 connect4    </h1>
 
-                        <div class="docstring"><p>This package contains classes to create a Connect4 game. It includes the
-Connect4 class which manages the game and the Player class representing a player.</p>
+                        <div class="docstring"><p>This package contains the functionality needed to create client code for a
+Connect4 game. The Connect4 class implements the game logic and exposes
+public methods needed to run the game.</p>
 </div>
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;This package contains classes to create a Connect4 game. It includes the</span>
-<span class="sd">Connect4 class which manages the game and the Player class representing a player.</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;This package contains the functionality needed to create client code for a</span>
+<span class="sd">   Connect4 game. The Connect4 class implements the game logic and exposes</span>
+<span class="sd">   public methods needed to run the game.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">random</span>
@@ -138,90 +134,26 @@ Connect4 class which manages the game and the Player class representing a player
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="k">class</span> <span class="nc">GameState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot;Represents the current state of the connect4 game</span>
+  <span class="sd">&quot;&quot;&quot;Represents the current state of the connect4 game.</span>
 <span class="sd">  - GAME_CONTINUE : no players have won yet, game is still ongoing.</span>
 <span class="sd">  - PLAYER_WON : the player who made the most recent move has won.</span>
-<span class="sd">  - BOARD_FULL : the board is full, no additional tokens can be added, no players have won.</span>
+<span class="sd">  - DRAW : the board is full, no additional tokens can be added, no players have won.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">BOARD_FULL</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">DRAW</span> <span class="o">=</span> <span class="mi">0</span>
   <span class="n">PLAYER_WIN</span> <span class="o">=</span> <span class="mi">1</span>
   <span class="n">GAME_CONTINUE</span> <span class="o">=</span> <span class="mi">2</span>
 
 
 <span class="k">class</span> <span class="nc">BoardValue</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot;Represents the possible values in the connect4 game board&quot;&quot;&quot;</span>
+  <span class="sd">&quot;&quot;&quot;Represents the possible values in the connect4 game board.&quot;&quot;&quot;</span>
   <span class="n">EMPTY</span> <span class="o">=</span> <span class="mi">0</span>
   <span class="n">A_TOKEN</span> <span class="o">=</span> <span class="mi">1</span>
   <span class="n">B_TOKEN</span> <span class="o">=</span> <span class="mi">2</span>
 
-
-<span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot;This class represents a player for connect4 that takes in inputs from stdin</span>
-<span class="sd">  to play the next move. This class is meant to be a base template for its</span>
-<span class="sd">  subclasses.</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-
-  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Constructor for the player class.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----</span>
-<span class="sd">    name : `str` - name of the player.</span>
-
-<span class="sd">    Return Value</span>
-<span class="sd">    ----</span>
-<span class="sd">    result : `Player` - the player object.</span>
-
-<span class="sd">    Exceptions</span>
-<span class="sd">    ----</span>
-<span class="sd">    None.</span>
-
-<span class="sd">    Sample Code</span>
-<span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; myPlayer = Player(&quot;Bob&quot;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-
-  <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
-
-  <span class="k">def</span> <span class="nf">choose_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">board</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BoardValue</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Decides how the player chooses the next column to drop a token in by</span>
-<span class="sd">    taking in an input from stdin. Subclasses of Player can override this method</span>
-<span class="sd">    to get different player behaviors.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----</span>
-<span class="sd">    board : &#39;List[List[BoardValue]]&#39; a 2d list representing the current board.</span>
-<span class="sd">    The most common and simple way is to use the board from the get_board()</span>
-<span class="sd">    method in the Connect4 class.</span>
-
-<span class="sd">    Return Value</span>
-<span class="sd">    ----</span>
-<span class="sd">    result : `int` - the column on the connect4 board which the player will add</span>
-<span class="sd">    a token to.</span>
-
-<span class="sd">    Exceptions</span>
-<span class="sd">    ----</span>
-<span class="sd">    ValueError - thrown when inputted column value is not an int or when</span>
-<span class="sd">    col &lt; 0 or col &gt; 6.</span>
-
-<span class="sd">    Sample Code</span>
-<span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; board = game.get_board()</span>
-<span class="sd">    &gt;&gt;&gt; myPlayer.choose_column(board)</span>
-<span class="sd">    3</span>
-<span class="sd">    3</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Player </span><span class="si">%s</span><span class="s2">: Choose a column to add a token to.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">col</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
-
+<span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Represents the 2 players of a connect4 game.&quot;&quot;&quot;</span>
+  <span class="n">A</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">B</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="k">class</span> <span class="nc">Connect4</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;This class represents a Connect4 game. The game board is represented by a</span>
@@ -229,18 +161,18 @@ Connect4 class which manages the game and the Player class representing a player
 <span class="sd">  increases from top to bottom and the index of the columns increases from left</span>
 <span class="sd">  to right for the corresponding game board. Both row and columns are zero</span>
 <span class="sd">  indexed.</span>
+
+<span class="sd">  The two players are represented by Player.A and Player.B.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">_num_rows</span> <span class="o">=</span> <span class="mi">6</span>
   <span class="n">_num_columns</span> <span class="o">=</span> <span class="mi">7</span>
 
-  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_a</span><span class="p">:</span> <span class="n">Player</span><span class="p">,</span> <span class="n">player_b</span><span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Constructor for the Connect4 game.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----</span>
-<span class="sd">    player_a : `Player` - one player of the game.</span>
-
-<span class="sd">    player_b : `Player` - the other player of the game.</span>
+<span class="sd">    None.</span>
 
 <span class="sd">    Return Value</span>
 <span class="sd">    ----</span>
@@ -248,25 +180,16 @@ Connect4 class which manages the game and the Player class representing a player
 
 <span class="sd">    Exceptions</span>
 <span class="sd">    ----</span>
-<span class="sd">    TypeError - thrown when either playerA or playerB is not of type `Player` or</span>
-<span class="sd">    is None.</span>
-
-<span class="sd">    SamePlayerException - thrown when playerA and playerB is the same player.</span>
+<span class="sd">    None.</span>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">_board</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Connect4</span><span class="o">.</span><span class="n">_num_rows</span><span class="p">)]</span>
-
-    <span class="k">if</span> <span class="n">player_a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">player_b</span><span class="p">:</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">_players</span> <span class="o">=</span> <span class="p">[</span><span class="n">player_a</span><span class="p">,</span> <span class="n">player_b</span><span class="p">]</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">start_new_game</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">SamePlayerException</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_players</span> <span class="o">=</span> <span class="p">[</span><span class="n">Player</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">Player</span><span class="o">.</span><span class="n">B</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">start_new_game</span><span class="p">()</span>
 
   <span class="k">def</span> <span class="nf">get_game_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GameState</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the current game state.</span>
@@ -285,9 +208,7 @@ Connect4 class which manages the game and the Player class representing a player
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
 <span class="sd">    &gt;&gt;&gt; game.get_game_state()</span>
 <span class="sd">    GameState.GAME_CONTINUE</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -302,7 +223,7 @@ Connect4 class which manages the game and the Player class representing a player
 
 <span class="sd">    Return Value</span>
 <span class="sd">    ----</span>
-<span class="sd">    player : `Player` - the player playing this turn.</span>
+<span class="sd">    player : `Player` - enum representing the current player.</span>
 
 <span class="sd">    Exceptions</span>
 <span class="sd">    ----</span>
@@ -310,17 +231,15 @@ Connect4 class which manages the game and the Player class representing a player
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; game.get_curr_player().name</span>
-<span class="sd">    &#39;A&#39;</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
+<span class="sd">    &gt;&gt;&gt; game.get_curr_player()</span>
+<span class="sd">    Player.A</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_curr_player_index</span><span class="p">]</span>
 
   <span class="k">def</span> <span class="nf">get_board</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BoardValue</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the current board as a 2D array of BoardValues.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a deep copy of the current board as a 2D array of BoardValues.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----</span>
@@ -328,7 +247,7 @@ Connect4 class which manages the game and the Player class representing a player
 
 <span class="sd">    Return Value</span>
 <span class="sd">    ----</span>
-<span class="sd">    board : `List[List[BoardValue]]` - returns a copy of the current board state</span>
+<span class="sd">    board : `List[List[BoardValue]]` - returns a deep copy of the current board state</span>
 <span class="sd">    as a 2D array.</span>
 
 <span class="sd">    Exception</span>
@@ -337,10 +256,8 @@ Connect4 class which manages the game and the Player class representing a player
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; board = game.get_board()</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
+<span class="sd">    &gt;&gt;&gt; board = game.get_board() # returns an empty board</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ret</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)]</span>
@@ -357,7 +274,9 @@ Connect4 class which manages the game and the Player class representing a player
 
   <span class="k">def</span> <span class="nf">add_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GameState</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Adds a token to the column for the current player. Token is always placed</span>
-<span class="sd">    at the bottom-most empty row of that column.</span>
+<span class="sd">    at the bottom-most empty row of that column. Modifies the game board and</span>
+<span class="sd">    switches the current player to the next player. The board is 0 indexed and</span>
+<span class="sd">    starts at column 0 and ends at column 6.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----</span>
@@ -371,25 +290,27 @@ Connect4 class which manages the game and the Player class representing a player
 <span class="sd">    ----</span>
 <span class="sd">    ValueError - thrown when column is out of bounds</span>
 
-<span class="sd">    FullColumnException - thrown when trying to add a token to a full column.</span>
+<span class="sd">    FullColumnError - thrown when trying to add a token to a full column.</span>
 
-<span class="sd">    GameOverException - thrown when there is already a winner or board is full.</span>
+<span class="sd">    GameOverError - thrown when there is already a winner or board is full.</span>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; game.add_token(3)</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
+<span class="sd">    &gt;&gt;&gt; game.get_curr_player()</span>
+<span class="sd">    Player.A</span>
+<span class="sd">    &gt;&gt;&gt; game.add_token(3) # adds a token to the 4th column</span>
 <span class="sd">    GameState.GAME_CONTINUE</span>
+<span class="sd">    &gt;&gt;&gt; game.get_curr_player()</span>
+<span class="sd">    Player.B</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_game_state</span> <span class="o">!=</span> <span class="n">GameState</span><span class="o">.</span><span class="n">GAME_CONTINUE</span><span class="p">:</span>
-      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">GameOverException</span>
+      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">GameOverError</span>
     <span class="k">if</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">column</span> <span class="o">&gt;=</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span><span class="p">:</span>
       <span class="k">raise</span> <span class="ne">ValueError</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">FullColumnException</span>
+      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">FullColumnError</span>
 
     <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span><span class="p">):</span>
@@ -400,9 +321,6 @@ Connect4 class which manages the game and the Player class representing a player
         <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">[</span><span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr_player_index</span>
         <span class="k">break</span>
 
-    <span class="c1"># # print(&quot;board after&quot;)</span>
-    <span class="c1"># self._# print_board()</span>
-
     <span class="bp">self</span><span class="o">.</span><span class="n">_game_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_game_state</span><span class="p">(</span><span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">[</span><span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr_player_index</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_curr_player_index</span> <span class="o">^=</span> <span class="mi">1</span>
@@ -410,7 +328,8 @@ Connect4 class which manages the game and the Player class representing a player
 
   <span class="k">def</span> <span class="nf">start_new_game</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Starts a new connect4 game by emptying the game board. The first player</span>
-<span class="sd">    is selected randomly.</span>
+<span class="sd">    is selected randomly. This method is called automatically on creation of</span>
+<span class="sd">    a Connect4 instance.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----</span>
@@ -426,10 +345,9 @@ Connect4 class which manages the game and the Player class representing a player
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; game.start_new_game()</span>
+<span class="sd">    &gt;&gt;&gt; game.get_board() # assuming game has been played, returns an non-empty board</span>
+<span class="sd">    &gt;&gt;&gt; game.start_new_game() # restarts the game</span>
+<span class="sd">    &gt;&gt;&gt; game.get_board() # returns an empty board</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Connect4</span><span class="o">.</span><span class="n">_num_rows</span><span class="p">):</span>
@@ -451,7 +369,7 @@ Connect4 class which manages the game and the Player class representing a player
           <span class="k">break</span>
       <span class="k">if</span> <span class="n">is_full</span><span class="p">:</span>
         <span class="c1"># print(&quot;_calc_game_state: full&quot;)</span>
-        <span class="k">return</span> <span class="n">GameState</span><span class="o">.</span><span class="n">BOARD_FULL</span>
+        <span class="k">return</span> <span class="n">GameState</span><span class="o">.</span><span class="n">DRAW</span>
 
     <span class="c1"># ========================= new token at first of connect4</span>
     <span class="k">if</span> <span class="n">new_row</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># 0</span>
@@ -569,15 +487,11 @@ Connect4 class which manages the game and the Player class representing a player
 
     <span class="k">return</span> <span class="n">GameState</span><span class="o">.</span><span class="n">GAME_CONTINUE</span>
 
-  <span class="k">class</span> <span class="nc">SamePlayerException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Thrown when the 2 players of a Connect4 game are the same player.&quot;&quot;&quot;</span>
-    <span class="k">pass</span>
-
-  <span class="k">class</span> <span class="nc">FullColumnException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+  <span class="k">class</span> <span class="nc">FullColumnError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Thrown when attempting to add token to a full column.&quot;&quot;&quot;</span>
     <span class="k">pass</span>
 
-  <span class="k">class</span> <span class="nc">GameOverException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+  <span class="k">class</span> <span class="nc">GameOverError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Thrown when attempting to add token to the board when the game is already</span>
 <span class="sd">    over (either a player won or the board is full).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -599,32 +513,32 @@ Connect4 class which manages the game and the Player class representing a player
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">GameState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot;Represents the current state of the connect4 game</span>
+  <span class="sd">&quot;&quot;&quot;Represents the current state of the connect4 game.</span>
 <span class="sd">  - GAME_CONTINUE : no players have won yet, game is still ongoing.</span>
 <span class="sd">  - PLAYER_WON : the player who made the most recent move has won.</span>
-<span class="sd">  - BOARD_FULL : the board is full, no additional tokens can be added, no players have won.</span>
+<span class="sd">  - DRAW : the board is full, no additional tokens can be added, no players have won.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">BOARD_FULL</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">DRAW</span> <span class="o">=</span> <span class="mi">0</span>
   <span class="n">PLAYER_WIN</span> <span class="o">=</span> <span class="mi">1</span>
   <span class="n">GAME_CONTINUE</span> <span class="o">=</span> <span class="mi">2</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Represents the current state of the connect4 game</p>
+            <div class="docstring"><p>Represents the current state of the connect4 game.</p>
 
 <ul>
 <li>GAME_CONTINUE : no players have won yet, game is still ongoing.</li>
 <li>PLAYER_WON : the player who made the most recent move has won.</li>
-<li>BOARD_FULL : the board is full, no additional tokens can be added, no players have won.</li>
+<li>DRAW : the board is full, no additional tokens can be added, no players have won.</li>
 </ul>
 </div>
 
 
-                            <div id="GameState.BOARD_FULL" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#GameState.BOARD_FULL">#&nbsp;&nbsp</a>
+                            <div id="GameState.DRAW" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#GameState.DRAW">#&nbsp;&nbsp</a>
 
-        <span class="name">BOARD_FULL</span><span class="default_value"> = &lt;<a href="#GameState.BOARD_FULL">GameState.BOARD_FULL</a>: 0&gt;</span>
+        <span class="name">DRAW</span><span class="default_value"> = &lt;<a href="#GameState.DRAW">GameState.DRAW</a>: 0&gt;</span>
     </div>
 
     
@@ -671,7 +585,7 @@ Connect4 class which manages the game and the Player class representing a player
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BoardValue</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot;Represents the possible values in the connect4 game board&quot;&quot;&quot;</span>
+  <span class="sd">&quot;&quot;&quot;Represents the possible values in the connect4 game board.&quot;&quot;&quot;</span>
   <span class="n">EMPTY</span> <span class="o">=</span> <span class="mi">0</span>
   <span class="n">A_TOKEN</span> <span class="o">=</span> <span class="mi">1</span>
   <span class="n">B_TOKEN</span> <span class="o">=</span> <span class="mi">2</span>
@@ -679,7 +593,7 @@ Connect4 class which manages the game and the Player class representing a player
 
         </details>
 
-            <div class="docstring"><p>Represents the possible values in the connect4 game board</p>
+            <div class="docstring"><p>Represents the possible values in the connect4 game board.</p>
 </div>
 
 
@@ -727,225 +641,50 @@ Connect4 class which manages the game and the Player class representing a player
 
         
         <span class="def">class</span>
-        <span class="name">Player</span>:
+        <span class="name">Player</span><wbr>(<span class="base">enum.Enum</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot;This class represents a player for connect4 that takes in inputs from stdin</span>
-<span class="sd">  to play the next move. This class is meant to be a base template for its</span>
-<span class="sd">  subclasses.</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-
-  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Constructor for the player class.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----</span>
-<span class="sd">    name : `str` - name of the player.</span>
-
-<span class="sd">    Return Value</span>
-<span class="sd">    ----</span>
-<span class="sd">    result : `Player` - the player object.</span>
-
-<span class="sd">    Exceptions</span>
-<span class="sd">    ----</span>
-<span class="sd">    None.</span>
-
-<span class="sd">    Sample Code</span>
-<span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; myPlayer = Player(&quot;Bob&quot;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-
-  <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
-
-  <span class="k">def</span> <span class="nf">choose_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">board</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BoardValue</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Decides how the player chooses the next column to drop a token in by</span>
-<span class="sd">    taking in an input from stdin. Subclasses of Player can override this method</span>
-<span class="sd">    to get different player behaviors.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----</span>
-<span class="sd">    board : &#39;List[List[BoardValue]]&#39; a 2d list representing the current board.</span>
-<span class="sd">    The most common and simple way is to use the board from the get_board()</span>
-<span class="sd">    method in the Connect4 class.</span>
-
-<span class="sd">    Return Value</span>
-<span class="sd">    ----</span>
-<span class="sd">    result : `int` - the column on the connect4 board which the player will add</span>
-<span class="sd">    a token to.</span>
-
-<span class="sd">    Exceptions</span>
-<span class="sd">    ----</span>
-<span class="sd">    ValueError - thrown when inputted column value is not an int or when</span>
-<span class="sd">    col &lt; 0 or col &gt; 6.</span>
-
-<span class="sd">    Sample Code</span>
-<span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; board = game.get_board()</span>
-<span class="sd">    &gt;&gt;&gt; myPlayer.choose_column(board)</span>
-<span class="sd">    3</span>
-<span class="sd">    3</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Player </span><span class="si">%s</span><span class="s2">: Choose a column to add a token to.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">col</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Represents the 2 players of a connect4 game.&quot;&quot;&quot;</span>
+  <span class="n">A</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">B</span> <span class="o">=</span> <span class="mi">1</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>This class represents a player for connect4 that takes in inputs from stdin
-to play the next move. This class is meant to be a base template for its
-subclasses.</p>
+            <div class="docstring"><p>Represents the 2 players of a connect4 game.</p>
 </div>
 
 
-                            <div id="Player.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Player.__init__">#&nbsp;&nbsp</a>
+                            <div id="Player.A" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Player.A">#&nbsp;&nbsp</a>
 
-        
-            <span class="name">Player</span><span class="signature">(name: str)</span>
+        <span class="name">A</span><span class="default_value"> = &lt;<a href="#Player.A">Player.A</a>: 0&gt;</span>
     </div>
 
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Constructor for the player class.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----</span>
-<span class="sd">    name : `str` - name of the player.</span>
-
-<span class="sd">    Return Value</span>
-<span class="sd">    ----</span>
-<span class="sd">    result : `Player` - the player object.</span>
-
-<span class="sd">    Exceptions</span>
-<span class="sd">    ----</span>
-<span class="sd">    None.</span>
-
-<span class="sd">    Sample Code</span>
-<span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; myPlayer = Player(&quot;Bob&quot;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Constructor for the player class.</p>
-
-<h2 id="parameters">Parameters</h2>
-
-<p>name : <code>str</code> - name of the player.</p>
-
-<h2 id="return-value">Return Value</h2>
-
-<p>result : <code><a href="#Player">Player</a></code> - the player object.</p>
-
-<h2 id="exceptions">Exceptions</h2>
-
-<p>None.</p>
-
-<h2 id="sample-code">Sample Code</h2>
-
-<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">myPlayer</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;Bob&quot;</span><span class="p">)</span>
-</code></pre></div>
-</div>
-
+    
 
                             </div>
-                            <div id="Player.choose_column" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Player.choose_column">#&nbsp;&nbsp</a>
+                            <div id="Player.B" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Player.B">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">def</span>
-            <span class="name">choose_column</span><span class="signature">(self, board: List[List[<a href="#BoardValue">connect4.BoardValue</a>]]) -&gt; int</span>:
+        <span class="name">B</span><span class="default_value"> = &lt;<a href="#Player.B">Player.B</a>: 1&gt;</span>
     </div>
 
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>  <span class="k">def</span> <span class="nf">choose_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">board</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BoardValue</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Decides how the player chooses the next column to drop a token in by</span>
-<span class="sd">    taking in an input from stdin. Subclasses of Player can override this method</span>
-<span class="sd">    to get different player behaviors.</span>
+    
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----</span>
-<span class="sd">    board : &#39;List[List[BoardValue]]&#39; a 2d list representing the current board.</span>
-<span class="sd">    The most common and simple way is to use the board from the get_board()</span>
-<span class="sd">    method in the Connect4 class.</span>
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>enum.Enum</dt>
+                                <dd id="Player.name" class="variable">name</dd>
+                <dd id="Player.value" class="variable">value</dd>
 
-<span class="sd">    Return Value</span>
-<span class="sd">    ----</span>
-<span class="sd">    result : `int` - the column on the connect4 board which the player will add</span>
-<span class="sd">    a token to.</span>
-
-<span class="sd">    Exceptions</span>
-<span class="sd">    ----</span>
-<span class="sd">    ValueError - thrown when inputted column value is not an int or when</span>
-<span class="sd">    col &lt; 0 or col &gt; 6.</span>
-
-<span class="sd">    Sample Code</span>
-<span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; board = game.get_board()</span>
-<span class="sd">    &gt;&gt;&gt; myPlayer.choose_column(board)</span>
-<span class="sd">    3</span>
-<span class="sd">    3</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Player </span><span class="si">%s</span><span class="s2">: Choose a column to add a token to.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">col</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Decides how the player chooses the next column to drop a token in by
-taking in an input from stdin. Subclasses of Player can override this method
-to get different player behaviors.</p>
-
-<h2 id="parameters">Parameters</h2>
-
-<p>board : 'List[List[BoardValue]]' a 2d list representing the current board.
-The most common and simple way is to use the board from the get_board()
-method in the Connect4 class.</p>
-
-<h2 id="return-value">Return Value</h2>
-
-<p>result : <code>int</code> - the column on the connect4 board which the player will add
-a token to.</p>
-
-<h2 id="exceptions">Exceptions</h2>
-
-<p>ValueError - thrown when inputted column value is not an int or when
-col &lt; 0 or col &gt; 6.</p>
-
-<h2 id="sample-code">Sample Code</h2>
-
-<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">playerA</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">playerB</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">(</span><span class="n">playerA</span><span class="p">,</span> <span class="n">playerB</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">board</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">get_board</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">myPlayer</span><span class="o">.</span><span class="n">choose_column</span><span class="p">(</span><span class="n">board</span><span class="p">)</span>
-<span class="go">3</span>
-<span class="go">3</span>
-</code></pre></div>
-</div>
-
-
+            </div>
+                                </dl>
                             </div>
                 </section>
                 <section id="Connect4">
@@ -965,18 +704,18 @@ col &lt; 0 or col &gt; 6.</p>
 <span class="sd">  increases from top to bottom and the index of the columns increases from left</span>
 <span class="sd">  to right for the corresponding game board. Both row and columns are zero</span>
 <span class="sd">  indexed.</span>
+
+<span class="sd">  The two players are represented by Player.A and Player.B.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">_num_rows</span> <span class="o">=</span> <span class="mi">6</span>
   <span class="n">_num_columns</span> <span class="o">=</span> <span class="mi">7</span>
 
-  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_a</span><span class="p">:</span> <span class="n">Player</span><span class="p">,</span> <span class="n">player_b</span><span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Constructor for the Connect4 game.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----</span>
-<span class="sd">    player_a : `Player` - one player of the game.</span>
-
-<span class="sd">    player_b : `Player` - the other player of the game.</span>
+<span class="sd">    None.</span>
 
 <span class="sd">    Return Value</span>
 <span class="sd">    ----</span>
@@ -984,25 +723,16 @@ col &lt; 0 or col &gt; 6.</p>
 
 <span class="sd">    Exceptions</span>
 <span class="sd">    ----</span>
-<span class="sd">    TypeError - thrown when either playerA or playerB is not of type `Player` or</span>
-<span class="sd">    is None.</span>
-
-<span class="sd">    SamePlayerException - thrown when playerA and playerB is the same player.</span>
+<span class="sd">    None.</span>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">_board</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Connect4</span><span class="o">.</span><span class="n">_num_rows</span><span class="p">)]</span>
-
-    <span class="k">if</span> <span class="n">player_a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">player_b</span><span class="p">:</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">_players</span> <span class="o">=</span> <span class="p">[</span><span class="n">player_a</span><span class="p">,</span> <span class="n">player_b</span><span class="p">]</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">start_new_game</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">SamePlayerException</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_players</span> <span class="o">=</span> <span class="p">[</span><span class="n">Player</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">Player</span><span class="o">.</span><span class="n">B</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">start_new_game</span><span class="p">()</span>
 
   <span class="k">def</span> <span class="nf">get_game_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GameState</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the current game state.</span>
@@ -1021,9 +751,7 @@ col &lt; 0 or col &gt; 6.</p>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
 <span class="sd">    &gt;&gt;&gt; game.get_game_state()</span>
 <span class="sd">    GameState.GAME_CONTINUE</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1038,7 +766,7 @@ col &lt; 0 or col &gt; 6.</p>
 
 <span class="sd">    Return Value</span>
 <span class="sd">    ----</span>
-<span class="sd">    player : `Player` - the player playing this turn.</span>
+<span class="sd">    player : `Player` - enum representing the current player.</span>
 
 <span class="sd">    Exceptions</span>
 <span class="sd">    ----</span>
@@ -1046,17 +774,15 @@ col &lt; 0 or col &gt; 6.</p>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; game.get_curr_player().name</span>
-<span class="sd">    &#39;A&#39;</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
+<span class="sd">    &gt;&gt;&gt; game.get_curr_player()</span>
+<span class="sd">    Player.A</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_curr_player_index</span><span class="p">]</span>
 
   <span class="k">def</span> <span class="nf">get_board</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BoardValue</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the current board as a 2D array of BoardValues.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a deep copy of the current board as a 2D array of BoardValues.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----</span>
@@ -1064,7 +790,7 @@ col &lt; 0 or col &gt; 6.</p>
 
 <span class="sd">    Return Value</span>
 <span class="sd">    ----</span>
-<span class="sd">    board : `List[List[BoardValue]]` - returns a copy of the current board state</span>
+<span class="sd">    board : `List[List[BoardValue]]` - returns a deep copy of the current board state</span>
 <span class="sd">    as a 2D array.</span>
 
 <span class="sd">    Exception</span>
@@ -1073,10 +799,8 @@ col &lt; 0 or col &gt; 6.</p>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; board = game.get_board()</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
+<span class="sd">    &gt;&gt;&gt; board = game.get_board() # returns an empty board</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ret</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)]</span>
@@ -1093,7 +817,9 @@ col &lt; 0 or col &gt; 6.</p>
 
   <span class="k">def</span> <span class="nf">add_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GameState</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Adds a token to the column for the current player. Token is always placed</span>
-<span class="sd">    at the bottom-most empty row of that column.</span>
+<span class="sd">    at the bottom-most empty row of that column. Modifies the game board and</span>
+<span class="sd">    switches the current player to the next player. The board is 0 indexed and</span>
+<span class="sd">    starts at column 0 and ends at column 6.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----</span>
@@ -1107,25 +833,27 @@ col &lt; 0 or col &gt; 6.</p>
 <span class="sd">    ----</span>
 <span class="sd">    ValueError - thrown when column is out of bounds</span>
 
-<span class="sd">    FullColumnException - thrown when trying to add a token to a full column.</span>
+<span class="sd">    FullColumnError - thrown when trying to add a token to a full column.</span>
 
-<span class="sd">    GameOverException - thrown when there is already a winner or board is full.</span>
+<span class="sd">    GameOverError - thrown when there is already a winner or board is full.</span>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; game.add_token(3)</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
+<span class="sd">    &gt;&gt;&gt; game.get_curr_player()</span>
+<span class="sd">    Player.A</span>
+<span class="sd">    &gt;&gt;&gt; game.add_token(3) # adds a token to the 4th column</span>
 <span class="sd">    GameState.GAME_CONTINUE</span>
+<span class="sd">    &gt;&gt;&gt; game.get_curr_player()</span>
+<span class="sd">    Player.B</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_game_state</span> <span class="o">!=</span> <span class="n">GameState</span><span class="o">.</span><span class="n">GAME_CONTINUE</span><span class="p">:</span>
-      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">GameOverException</span>
+      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">GameOverError</span>
     <span class="k">if</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">column</span> <span class="o">&gt;=</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span><span class="p">:</span>
       <span class="k">raise</span> <span class="ne">ValueError</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">FullColumnException</span>
+      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">FullColumnError</span>
 
     <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span><span class="p">):</span>
@@ -1136,9 +864,6 @@ col &lt; 0 or col &gt; 6.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">[</span><span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr_player_index</span>
         <span class="k">break</span>
 
-    <span class="c1"># # print(&quot;board after&quot;)</span>
-    <span class="c1"># self._# print_board()</span>
-
     <span class="bp">self</span><span class="o">.</span><span class="n">_game_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_game_state</span><span class="p">(</span><span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">[</span><span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr_player_index</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_curr_player_index</span> <span class="o">^=</span> <span class="mi">1</span>
@@ -1146,7 +871,8 @@ col &lt; 0 or col &gt; 6.</p>
 
   <span class="k">def</span> <span class="nf">start_new_game</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Starts a new connect4 game by emptying the game board. The first player</span>
-<span class="sd">    is selected randomly.</span>
+<span class="sd">    is selected randomly. This method is called automatically on creation of</span>
+<span class="sd">    a Connect4 instance.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----</span>
@@ -1162,10 +888,9 @@ col &lt; 0 or col &gt; 6.</p>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; game.start_new_game()</span>
+<span class="sd">    &gt;&gt;&gt; game.get_board() # assuming game has been played, returns an non-empty board</span>
+<span class="sd">    &gt;&gt;&gt; game.start_new_game() # restarts the game</span>
+<span class="sd">    &gt;&gt;&gt; game.get_board() # returns an empty board</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Connect4</span><span class="o">.</span><span class="n">_num_rows</span><span class="p">):</span>
@@ -1187,7 +912,7 @@ col &lt; 0 or col &gt; 6.</p>
           <span class="k">break</span>
       <span class="k">if</span> <span class="n">is_full</span><span class="p">:</span>
         <span class="c1"># print(&quot;_calc_game_state: full&quot;)</span>
-        <span class="k">return</span> <span class="n">GameState</span><span class="o">.</span><span class="n">BOARD_FULL</span>
+        <span class="k">return</span> <span class="n">GameState</span><span class="o">.</span><span class="n">DRAW</span>
 
     <span class="c1"># ========================= new token at first of connect4</span>
     <span class="k">if</span> <span class="n">new_row</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># 0</span>
@@ -1305,15 +1030,11 @@ col &lt; 0 or col &gt; 6.</p>
 
     <span class="k">return</span> <span class="n">GameState</span><span class="o">.</span><span class="n">GAME_CONTINUE</span>
 
-  <span class="k">class</span> <span class="nc">SamePlayerException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Thrown when the 2 players of a Connect4 game are the same player.&quot;&quot;&quot;</span>
-    <span class="k">pass</span>
-
-  <span class="k">class</span> <span class="nc">FullColumnException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+  <span class="k">class</span> <span class="nc">FullColumnError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Thrown when attempting to add token to a full column.&quot;&quot;&quot;</span>
     <span class="k">pass</span>
 
-  <span class="k">class</span> <span class="nc">GameOverException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+  <span class="k">class</span> <span class="nc">GameOverError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Thrown when attempting to add token to the board when the game is already</span>
 <span class="sd">    over (either a player won or the board is full).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1327,6 +1048,8 @@ col &lt; 0 or col &gt; 6.</p>
 increases from top to bottom and the index of the columns increases from left
 to right for the corresponding game board. Both row and columns are zero
 indexed.</p>
+
+<p>The two players are represented by <a href="#Player.A">Player.A</a> and <a href="#Player.B">Player.B</a>.</p>
 </div>
 
 
@@ -1334,19 +1057,17 @@ indexed.</p>
                                         <div class="attr function"><a class="headerlink" href="#Connect4.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">Connect4</span><span class="signature">(player_a: <a href="#Player">connect4.Player</a>, player_b: <a href="#Player">connect4.Player</a>)</span>
+            <span class="name">Connect4</span><span class="signature">()</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_a</span><span class="p">:</span> <span class="n">Player</span><span class="p">,</span> <span class="n">player_b</span><span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Constructor for the Connect4 game.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----</span>
-<span class="sd">    player_a : `Player` - one player of the game.</span>
-
-<span class="sd">    player_b : `Player` - the other player of the game.</span>
+<span class="sd">    None.</span>
 
 <span class="sd">    Return Value</span>
 <span class="sd">    ----</span>
@@ -1354,25 +1075,16 @@ indexed.</p>
 
 <span class="sd">    Exceptions</span>
 <span class="sd">    ----</span>
-<span class="sd">    TypeError - thrown when either playerA or playerB is not of type `Player` or</span>
-<span class="sd">    is None.</span>
-
-<span class="sd">    SamePlayerException - thrown when playerA and playerB is the same player.</span>
+<span class="sd">    None.</span>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">_board</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Connect4</span><span class="o">.</span><span class="n">_num_rows</span><span class="p">)]</span>
-
-    <span class="k">if</span> <span class="n">player_a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">player_b</span><span class="p">:</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">_players</span> <span class="o">=</span> <span class="p">[</span><span class="n">player_a</span><span class="p">,</span> <span class="n">player_b</span><span class="p">]</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">start_new_game</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">SamePlayerException</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_players</span> <span class="o">=</span> <span class="p">[</span><span class="n">Player</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">Player</span><span class="o">.</span><span class="n">B</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">start_new_game</span><span class="p">()</span>
 </pre></div>
 
         </details>
@@ -1381,9 +1093,7 @@ indexed.</p>
 
 <h2 id="parameters">Parameters</h2>
 
-<p>player_a : <code><a href="#Player">Player</a></code> - one player of the game.</p>
-
-<p>player_b : <code><a href="#Player">Player</a></code> - the other player of the game.</p>
+<p>None.</p>
 
 <h2 id="return-value">Return Value</h2>
 
@@ -1391,16 +1101,11 @@ indexed.</p>
 
 <h2 id="exceptions">Exceptions</h2>
 
-<p>TypeError - thrown when either playerA or playerB is not of type <code><a href="#Player">Player</a></code> or
-is None.</p>
-
-<p>SamePlayerException - thrown when playerA and playerB is the same player.</p>
+<p>None.</p>
 
 <h2 id="sample-code">Sample Code</h2>
 
-<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">playerA</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">playerB</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">(</span><span class="n">playerA</span><span class="p">,</span> <span class="n">playerB</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">()</span>
 </code></pre></div>
 </div>
 
@@ -1433,9 +1138,7 @@ is None.</p>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
 <span class="sd">    &gt;&gt;&gt; game.get_game_state()</span>
 <span class="sd">    GameState.GAME_CONTINUE</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1460,9 +1163,7 @@ is None.</p>
 
 <h2 id="sample-code">Sample Code</h2>
 
-<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">playerA</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">playerB</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">(</span><span class="n">playerA</span><span class="p">,</span> <span class="n">playerB</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">get_game_state</span><span class="p">()</span>
 <span class="go"><a href="#GameState.GAME_CONTINUE">GameState.GAME_CONTINUE</a></span>
 </code></pre></div>
@@ -1489,7 +1190,7 @@ is None.</p>
 
 <span class="sd">    Return Value</span>
 <span class="sd">    ----</span>
-<span class="sd">    player : `Player` - the player playing this turn.</span>
+<span class="sd">    player : `Player` - enum representing the current player.</span>
 
 <span class="sd">    Exceptions</span>
 <span class="sd">    ----</span>
@@ -1497,11 +1198,9 @@ is None.</p>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; game.get_curr_player().name</span>
-<span class="sd">    &#39;A&#39;</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
+<span class="sd">    &gt;&gt;&gt; game.get_curr_player()</span>
+<span class="sd">    Player.A</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_curr_player_index</span><span class="p">]</span>
@@ -1517,7 +1216,7 @@ is None.</p>
 
 <h2 id="return-value">Return Value</h2>
 
-<p>player : <code><a href="#Player">Player</a></code> - the player playing this turn.</p>
+<p>player : <code><a href="#Player">Player</a></code> - enum representing the current player.</p>
 
 <h2 id="exceptions">Exceptions</h2>
 
@@ -1525,11 +1224,9 @@ is None.</p>
 
 <h2 id="sample-code">Sample Code</h2>
 
-<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">playerA</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">playerB</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">(</span><span class="n">playerA</span><span class="p">,</span> <span class="n">playerB</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">get_curr_player</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
-<span class="go">&#39;A&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">get_curr_player</span><span class="p">()</span>
+<span class="go"><a href="#Player.A">Player.A</a></span>
 </code></pre></div>
 </div>
 
@@ -1546,7 +1243,7 @@ is None.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>  <span class="k">def</span> <span class="nf">get_board</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BoardValue</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the current board as a 2D array of BoardValues.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a deep copy of the current board as a 2D array of BoardValues.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----</span>
@@ -1554,7 +1251,7 @@ is None.</p>
 
 <span class="sd">    Return Value</span>
 <span class="sd">    ----</span>
-<span class="sd">    board : `List[List[BoardValue]]` - returns a copy of the current board state</span>
+<span class="sd">    board : `List[List[BoardValue]]` - returns a deep copy of the current board state</span>
 <span class="sd">    as a 2D array.</span>
 
 <span class="sd">    Exception</span>
@@ -1563,10 +1260,8 @@ is None.</p>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; board = game.get_board()</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
+<span class="sd">    &gt;&gt;&gt; board = game.get_board() # returns an empty board</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ret</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)]</span>
@@ -1584,7 +1279,7 @@ is None.</p>
 
         </details>
 
-            <div class="docstring"><p>Returns the current board as a 2D array of BoardValues.</p>
+            <div class="docstring"><p>Returns a deep copy of the current board as a 2D array of BoardValues.</p>
 
 <h2 id="parameters">Parameters</h2>
 
@@ -1592,7 +1287,7 @@ is None.</p>
 
 <h2 id="return-value">Return Value</h2>
 
-<p>board : <code>List[List[BoardValue]]</code> - returns a copy of the current board state
+<p>board : <code>List[List[BoardValue]]</code> - returns a deep copy of the current board state
 as a 2D array.</p>
 
 <h2 id="exception">Exception</h2>
@@ -1601,10 +1296,8 @@ as a 2D array.</p>
 
 <h2 id="sample-code">Sample Code</h2>
 
-<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">playerA</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">playerB</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">(</span><span class="n">playerA</span><span class="p">,</span> <span class="n">playerB</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">board</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">get_board</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">board</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">get_board</span><span class="p">()</span> <span class="c1"># returns an empty board</span>
 </code></pre></div>
 </div>
 
@@ -1622,7 +1315,9 @@ as a 2D array.</p>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>  <span class="k">def</span> <span class="nf">add_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GameState</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Adds a token to the column for the current player. Token is always placed</span>
-<span class="sd">    at the bottom-most empty row of that column.</span>
+<span class="sd">    at the bottom-most empty row of that column. Modifies the game board and</span>
+<span class="sd">    switches the current player to the next player. The board is 0 indexed and</span>
+<span class="sd">    starts at column 0 and ends at column 6.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----</span>
@@ -1636,25 +1331,27 @@ as a 2D array.</p>
 <span class="sd">    ----</span>
 <span class="sd">    ValueError - thrown when column is out of bounds</span>
 
-<span class="sd">    FullColumnException - thrown when trying to add a token to a full column.</span>
+<span class="sd">    FullColumnError - thrown when trying to add a token to a full column.</span>
 
-<span class="sd">    GameOverException - thrown when there is already a winner or board is full.</span>
+<span class="sd">    GameOverError - thrown when there is already a winner or board is full.</span>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; game.add_token(3)</span>
+<span class="sd">    &gt;&gt;&gt; game = Connect4()</span>
+<span class="sd">    &gt;&gt;&gt; game.get_curr_player()</span>
+<span class="sd">    Player.A</span>
+<span class="sd">    &gt;&gt;&gt; game.add_token(3) # adds a token to the 4th column</span>
 <span class="sd">    GameState.GAME_CONTINUE</span>
+<span class="sd">    &gt;&gt;&gt; game.get_curr_player()</span>
+<span class="sd">    Player.B</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_game_state</span> <span class="o">!=</span> <span class="n">GameState</span><span class="o">.</span><span class="n">GAME_CONTINUE</span><span class="p">:</span>
-      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">GameOverException</span>
+      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">GameOverError</span>
     <span class="k">if</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">column</span> <span class="o">&gt;=</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span><span class="p">:</span>
       <span class="k">raise</span> <span class="ne">ValueError</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">FullColumnException</span>
+      <span class="k">raise</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">FullColumnError</span>
 
     <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span><span class="p">):</span>
@@ -1665,9 +1362,6 @@ as a 2D array.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">[</span><span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr_player_index</span>
         <span class="k">break</span>
 
-    <span class="c1"># # print(&quot;board after&quot;)</span>
-    <span class="c1"># self._# print_board()</span>
-
     <span class="bp">self</span><span class="o">.</span><span class="n">_game_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_game_state</span><span class="p">(</span><span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">[</span><span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr_player_index</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_curr_player_index</span> <span class="o">^=</span> <span class="mi">1</span>
@@ -1677,7 +1371,9 @@ as a 2D array.</p>
         </details>
 
             <div class="docstring"><p>Adds a token to the column for the current player. Token is always placed
-at the bottom-most empty row of that column.</p>
+at the bottom-most empty row of that column. Modifies the game board and
+switches the current player to the next player. The board is 0 indexed and
+starts at column 0 and ends at column 6.</p>
 
 <h2 id="parameters">Parameters</h2>
 
@@ -1691,17 +1387,19 @@ at the bottom-most empty row of that column.</p>
 
 <p>ValueError - thrown when column is out of bounds</p>
 
-<p>FullColumnException - thrown when trying to add a token to a full column.</p>
+<p>FullColumnError - thrown when trying to add a token to a full column.</p>
 
-<p>GameOverException - thrown when there is already a winner or board is full.</p>
+<p>GameOverError - thrown when there is already a winner or board is full.</p>
 
 <h2 id="sample-code">Sample Code</h2>
 
-<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">playerA</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">playerB</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">(</span><span class="n">playerA</span><span class="p">,</span> <span class="n">playerB</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">add_token</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">get_curr_player</span><span class="p">()</span>
+<span class="go"><a href="#Player.A">Player.A</a></span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">add_token</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># adds a token to the 4th column</span>
 <span class="go"><a href="#GameState.GAME_CONTINUE">GameState.GAME_CONTINUE</a></span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">get_curr_player</span><span class="p">()</span>
+<span class="go"><a href="#Player.B">Player.B</a></span>
 </code></pre></div>
 </div>
 
@@ -1719,7 +1417,8 @@ at the bottom-most empty row of that column.</p>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>  <span class="k">def</span> <span class="nf">start_new_game</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Starts a new connect4 game by emptying the game board. The first player</span>
-<span class="sd">    is selected randomly.</span>
+<span class="sd">    is selected randomly. This method is called automatically on creation of</span>
+<span class="sd">    a Connect4 instance.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----</span>
@@ -1735,10 +1434,9 @@ at the bottom-most empty row of that column.</p>
 
 <span class="sd">    Sample Code</span>
 <span class="sd">    ----</span>
-<span class="sd">    &gt;&gt;&gt; playerA = Player(&quot;A&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; playerB = Player(&quot;B&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; game = Connect4(playerA, playerB)</span>
-<span class="sd">    &gt;&gt;&gt; game.start_new_game()</span>
+<span class="sd">    &gt;&gt;&gt; game.get_board() # assuming game has been played, returns an non-empty board</span>
+<span class="sd">    &gt;&gt;&gt; game.start_new_game() # restarts the game</span>
+<span class="sd">    &gt;&gt;&gt; game.get_board() # returns an empty board</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Connect4</span><span class="o">.</span><span class="n">_num_rows</span><span class="p">):</span>
@@ -1752,7 +1450,8 @@ at the bottom-most empty row of that column.</p>
         </details>
 
             <div class="docstring"><p>Starts a new connect4 game by emptying the game board. The first player
-is selected randomly.</p>
+is selected randomly. This method is called automatically on creation of
+a Connect4 instance.</p>
 
 <h2 id="parameters">Parameters</h2>
 
@@ -1768,65 +1467,27 @@ is selected randomly.</p>
 
 <h2 id="sample-code">Sample Code</h2>
 
-<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">playerA</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">playerB</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">(</span><span class="n">playerA</span><span class="p">,</span> <span class="n">playerB</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">start_new_game</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">get_board</span><span class="p">()</span> <span class="c1"># assuming game has been played, returns an non-empty board</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">start_new_game</span><span class="p">()</span> <span class="c1"># restarts the game</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">get_board</span><span class="p">()</span> <span class="c1"># returns an empty board</span>
 </code></pre></div>
 </div>
 
 
                             </div>
                 </section>
-                <section id="Connect4.SamePlayerException">
+                <section id="Connect4.FullColumnError">
                                 <div class="attr class">
-        <a class="headerlink" href="#Connect4.SamePlayerException">#&nbsp;&nbsp</a>
+        <a class="headerlink" href="#Connect4.FullColumnError">#&nbsp;&nbsp</a>
 
         
         <span class="def">class</span>
-        <span class="name">Connect4.SamePlayerException</span><wbr>(<span class="base">builtins.Exception</span>):
+        <span class="name">Connect4.FullColumnError</span><wbr>(<span class="base">builtins.Exception</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>  <span class="k">class</span> <span class="nc">SamePlayerException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Thrown when the 2 players of a Connect4 game are the same player.&quot;&quot;&quot;</span>
-    <span class="k">pass</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Thrown when the 2 players of a Connect4 game are the same player.</p>
-</div>
-
-
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt>builtins.Exception</dt>
-                                <dd id="Connect4.SamePlayerException.__init__" class="function">Exception</dd>
-
-            </div>
-            <div><dt>builtins.BaseException</dt>
-                                <dd id="Connect4.SamePlayerException.with_traceback" class="function">with_traceback</dd>
-                <dd id="Connect4.SamePlayerException.args" class="variable">args</dd>
-
-            </div>
-                                </dl>
-                            </div>
-                </section>
-                <section id="Connect4.FullColumnException">
-                                <div class="attr class">
-        <a class="headerlink" href="#Connect4.FullColumnException">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">Connect4.FullColumnException</span><wbr>(<span class="base">builtins.Exception</span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>  <span class="k">class</span> <span class="nc">FullColumnException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>  <span class="k">class</span> <span class="nc">FullColumnError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Thrown when attempting to add token to a full column.&quot;&quot;&quot;</span>
     <span class="k">pass</span>
 </pre></div>
@@ -1841,29 +1502,29 @@ is selected randomly.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>builtins.Exception</dt>
-                                <dd id="Connect4.FullColumnException.__init__" class="function">Exception</dd>
+                                <dd id="Connect4.FullColumnError.__init__" class="function">Exception</dd>
 
             </div>
             <div><dt>builtins.BaseException</dt>
-                                <dd id="Connect4.FullColumnException.with_traceback" class="function">with_traceback</dd>
-                <dd id="Connect4.FullColumnException.args" class="variable">args</dd>
+                                <dd id="Connect4.FullColumnError.with_traceback" class="function">with_traceback</dd>
+                <dd id="Connect4.FullColumnError.args" class="variable">args</dd>
 
             </div>
                                 </dl>
                             </div>
                 </section>
-                <section id="Connect4.GameOverException">
+                <section id="Connect4.GameOverError">
                                 <div class="attr class">
-        <a class="headerlink" href="#Connect4.GameOverException">#&nbsp;&nbsp</a>
+        <a class="headerlink" href="#Connect4.GameOverError">#&nbsp;&nbsp</a>
 
         
         <span class="def">class</span>
-        <span class="name">Connect4.GameOverException</span><wbr>(<span class="base">builtins.Exception</span>):
+        <span class="name">Connect4.GameOverError</span><wbr>(<span class="base">builtins.Exception</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>  <span class="k">class</span> <span class="nc">GameOverException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>  <span class="k">class</span> <span class="nc">GameOverError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Thrown when attempting to add token to the board when the game is already</span>
 <span class="sd">    over (either a player won or the board is full).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1881,12 +1542,12 @@ over (either a player won or the board is full).</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>builtins.Exception</dt>
-                                <dd id="Connect4.GameOverException.__init__" class="function">Exception</dd>
+                                <dd id="Connect4.GameOverError.__init__" class="function">Exception</dd>
 
             </div>
             <div><dt>builtins.BaseException</dt>
-                                <dd id="Connect4.GameOverException.with_traceback" class="function">with_traceback</dd>
-                <dd id="Connect4.GameOverException.args" class="variable">args</dd>
+                                <dd id="Connect4.GameOverError.with_traceback" class="function">with_traceback</dd>
+                <dd id="Connect4.GameOverError.args" class="variable">args</dd>
 
             </div>
                                 </dl>
