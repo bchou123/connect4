@@ -39,16 +39,14 @@ if __name__ == '__main__':
     while game_state == GameState.GAME_CONTINUE:  # while there is no winner, and the board is not full, the game can continue
         curr_player = connect4.get_curr_player()  # get current player for this round
         print(curr_player)
+
+        # player inputs their next move
         print("enter a column value (0-6)")
-        while True:
-            try:
-                column = int(input())
-                game_state = connect4.add_token(column)
-                break
-            except ValueError:  # the method raises ValueError if the input is not an int >=0 and <7
-                print("invalid column, choose again")
-            except connect4.FullColumnError:  # column must be unfilled (top of it must be empty), otherwise FullColumnError is raised
-                print("full column, choose again")
+        column = int(input())
+        while not connect4.is_valid_move(column):
+            print("Not a valid move! Please try again.")
+            column = int(input())
+        game_state = connect4.add_token(column)
 
         board = connect4.get_board()  # get board condition after the token is added
         print_board(board)

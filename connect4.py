@@ -146,6 +146,42 @@ class Connect4(object):
 
     return ret
 
+  def is_valid_move(self, column : int) -> bool:
+    """Given a column, checks whether adding a token to the column is a valid.
+    Does not modify the game board.
+    move.
+
+    Parameters
+    ----
+    column : `int` - the column to check.
+
+    Return Value
+    ----
+    valid : `bool` - True if adding a token to the column is valid, False
+    otherwise
+
+    Exceptions
+    ----
+    None.
+
+    Sample Code
+    ----
+    >>> game.is_valid_move(10)
+    False
+    >>> game.is_valid_move(2)
+    True
+    >>> game.add_token(2)
+    GameState.GAME_CONTINUE
+    """
+    if self._game_state != GameState.GAME_CONTINUE:
+      return False
+    if column < 0 or column >= Connect4._num_columns:
+      return False
+    if self._board[0][column] != -1:
+      return False
+    return True
+
+
   def add_token(self, column: int) -> GameState:
     """Adds a token to the column for the current player. Token is always placed
     at the bottom-most empty row of that column. Modifies the game board and
