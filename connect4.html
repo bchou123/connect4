@@ -81,6 +81,9 @@
                                 <a class="function" href="#Connect4.get_board">get_board</a>
                         </li>
                         <li>
+                                <a class="function" href="#Connect4.is_valid_move">is_valid_move</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Connect4.add_token">add_token</a>
                         </li>
                         <li>
@@ -271,6 +274,41 @@ public methods needed to run the game.</p>
           <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoardValue</span><span class="o">.</span><span class="n">B_TOKEN</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ret</span>
+
+  <span class="k">def</span> <span class="nf">is_valid_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Given a column, checks whether adding a token to the column is a valid.</span>
+<span class="sd">    Does not modify the game board.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----</span>
+<span class="sd">    column : `int` - the column to check.</span>
+
+<span class="sd">    Return Value</span>
+<span class="sd">    ----</span>
+<span class="sd">    valid : `bool` - True if adding a token to the column is valid, False</span>
+<span class="sd">    otherwise</span>
+
+<span class="sd">    Exceptions</span>
+<span class="sd">    ----</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    Sample Code</span>
+<span class="sd">    ----</span>
+<span class="sd">    &gt;&gt;&gt; game.is_valid_move(10)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; game.is_valid_move(2)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; game.add_token(2)</span>
+<span class="sd">    GameState.GAME_CONTINUE</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_game_state</span> <span class="o">!=</span> <span class="n">GameState</span><span class="o">.</span><span class="n">GAME_CONTINUE</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">column</span> <span class="o">&gt;=</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
 
   <span class="k">def</span> <span class="nf">add_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GameState</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Adds a token to the column for the current player. Token is always placed</span>
@@ -815,6 +853,41 @@ public methods needed to run the game.</p>
 
     <span class="k">return</span> <span class="n">ret</span>
 
+  <span class="k">def</span> <span class="nf">is_valid_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Given a column, checks whether adding a token to the column is a valid.</span>
+<span class="sd">    Does not modify the game board.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----</span>
+<span class="sd">    column : `int` - the column to check.</span>
+
+<span class="sd">    Return Value</span>
+<span class="sd">    ----</span>
+<span class="sd">    valid : `bool` - True if adding a token to the column is valid, False</span>
+<span class="sd">    otherwise</span>
+
+<span class="sd">    Exceptions</span>
+<span class="sd">    ----</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    Sample Code</span>
+<span class="sd">    ----</span>
+<span class="sd">    &gt;&gt;&gt; game.is_valid_move(10)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; game.is_valid_move(2)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; game.add_token(2)</span>
+<span class="sd">    GameState.GAME_CONTINUE</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_game_state</span> <span class="o">!=</span> <span class="n">GameState</span><span class="o">.</span><span class="n">GAME_CONTINUE</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">column</span> <span class="o">&gt;=</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
   <span class="k">def</span> <span class="nf">add_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GameState</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Adds a token to the column for the current player. Token is always placed</span>
 <span class="sd">    at the bottom-most empty row of that column. Modifies the game board and</span>
@@ -1298,6 +1371,82 @@ as a 2D array.</p>
 
 <div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span> <span class="o">=</span> <span class="n">Connect4</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">board</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">get_board</span><span class="p">()</span> <span class="c1"># returns an empty board</span>
+</code></pre></div>
+</div>
+
+
+                            </div>
+                            <div id="Connect4.is_valid_move" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Connect4.is_valid_move">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">is_valid_move</span><span class="signature">(self, column: int) -&gt; bool</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>  <span class="k">def</span> <span class="nf">is_valid_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Given a column, checks whether adding a token to the column is a valid.</span>
+<span class="sd">    Does not modify the game board.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----</span>
+<span class="sd">    column : `int` - the column to check.</span>
+
+<span class="sd">    Return Value</span>
+<span class="sd">    ----</span>
+<span class="sd">    valid : `bool` - True if adding a token to the column is valid, False</span>
+<span class="sd">    otherwise</span>
+
+<span class="sd">    Exceptions</span>
+<span class="sd">    ----</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    Sample Code</span>
+<span class="sd">    ----</span>
+<span class="sd">    &gt;&gt;&gt; game.is_valid_move(10)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; game.is_valid_move(2)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; game.add_token(2)</span>
+<span class="sd">    GameState.GAME_CONTINUE</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_game_state</span> <span class="o">!=</span> <span class="n">GameState</span><span class="o">.</span><span class="n">GAME_CONTINUE</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">column</span> <span class="o">&gt;=</span> <span class="n">Connect4</span><span class="o">.</span><span class="n">_num_columns</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Given a column, checks whether adding a token to the column is a valid.
+Does not modify the game board.</p>
+
+<h2 id="parameters">Parameters</h2>
+
+<p>column : <code>int</code> - the column to check.</p>
+
+<h2 id="return-value">Return Value</h2>
+
+<p>valid : <code>bool</code> - True if adding a token to the column is valid, False
+otherwise</p>
+
+<h2 id="exceptions">Exceptions</h2>
+
+<p>None.</p>
+
+<h2 id="sample-code">Sample Code</h2>
+
+<div class="codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">is_valid_move</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">is_valid_move</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">.</span><span class="n">add_token</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go"><a href="#GameState.GAME_CONTINUE">GameState.GAME_CONTINUE</a></span>
 </code></pre></div>
 </div>
 

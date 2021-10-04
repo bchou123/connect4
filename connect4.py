@@ -89,7 +89,7 @@ class Connect4(object):
     return self._game_state
 
   def get_curr_player(self) -> Player:
-    """Returns the current player for this turn.
+    """Returns the current player for this turn only if the game is still ongoing.
 
     Parameters
     ----
@@ -101,7 +101,7 @@ class Connect4(object):
 
     Exceptions
     ----
-    None.
+    GameOverError - thrown when there is already a winner or board is full.
 
     Sample Code
     ----
@@ -109,7 +109,8 @@ class Connect4(object):
     >>> game.get_curr_player()
     Player.A
     """
-
+    if self._game_state != GameState.GAME_CONTINUE:
+      raise Connect4.GameOverError
     return self._players[self._curr_player_index]
 
   def get_board(self) -> List[List[BoardValue]]:
@@ -149,7 +150,6 @@ class Connect4(object):
   def is_valid_move(self, column : int) -> bool:
     """Given a column, checks whether adding a token to the column is a valid.
     Does not modify the game board.
-    move.
 
     Parameters
     ----
